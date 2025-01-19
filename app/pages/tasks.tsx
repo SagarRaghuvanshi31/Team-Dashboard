@@ -2,8 +2,7 @@ export type Task = {
     id: number;
     title: string;
     description: string;
-    status: string
-    memberId: number;
+    status: "To Do" | "In Progress" | "Completed";
   };
   
   export type TeamMember = {
