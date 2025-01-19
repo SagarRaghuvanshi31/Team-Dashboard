@@ -1,12 +1,20 @@
-// app/pages/api/teamMembers.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+// app/utils/teamMember.ts
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const teamMembers = [
-    { id: 1, name: 'Alice', role: 'Developer', bio: 'Full-stack developer' },
-    { id: 2, name: 'Bob', role: 'Designer', bio: 'UI/UX designer' },
-    { id: 3, name: 'Charlie', role: 'Product Manager', bio: 'Ensures the team delivers quality' },
-  ];
-
-  res.status(200).json(teamMembers);
-}
+export type TeamMember = {
+    id: number;
+    name: string;
+    role: string;
+    bio: string;
+  };
+  
+  export const getTeamMembers = (): TeamMember[] => {
+    if (typeof window === 'undefined') return [];
+    const members = localStorage.getItem('teamMembers');
+    return members ? JSON.parse(members) : [];
+  };
+  
+  export const saveTeamMembers = (members: TeamMember[]): void => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('teamMembers', JSON.stringify(members));
+  };
+  
