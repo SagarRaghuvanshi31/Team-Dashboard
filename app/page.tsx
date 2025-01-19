@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showTaskManagement, setShowTaskManagement] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
-  const [isAddMemberVisible, setIsAddMemberVisible] = useState(false); // State to toggle visibility of the form
+  const [isAddMemberVisible, setIsAddMemberVisible] = useState(false);
 
   // Load team members from local storage
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Dashboard() {
       const newMemberWithId = { id: Date.now(), ...newMember, tasks: [] };
       setTeamMembers([...teamMembers, newMemberWithId]);
       setNewMember({ name: "", role: "", bio: "" });
-      setIsAddMemberVisible(false); // Hide form after adding member
+      setIsAddMemberVisible(false);
     }
   };
 
@@ -71,7 +71,7 @@ export default function Dashboard() {
 
   const deleteMember = (memberId: number) => {
     setTeamMembers(teamMembers.filter((member) => member.id !== memberId));
-    if (selectedMemberId === memberId) setSelectedMemberId(null); // Close the card if it's the selected member
+    if (selectedMemberId === memberId) setSelectedMemberId(null); 
   };
 
   const deleteTask = (memberId: number, taskId: number) => {
@@ -252,97 +252,76 @@ function TaskManagement({
 
   return (
     <section className="flex flex-col">
-      <h1 className="text-4xl font-semibold mb-10">Task Management</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teamMembers.map((member) => (
-          <div
-            key={member.id}
-            className="p-6 rounded-lg shadow-lg bg-gradient-to-r from-purple-500 to-indigo-600 text-white"
-          >
-            <p className="text-lg">
-              <span className="font-bold">Name:</span> {member.name}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Role:</span> {member.role}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Bio:</span> {member.bio}
-            </p>
-            <div className="mt-6 flex justify-between items-center">
-              <button
-                onClick={() => toggleTasksVisibility(member.id)}
-                className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-              >
-                {selectedMemberId === member.id ? "Hide Tasks" : "View Tasks"}
-              </button>
-              <button
-                onClick={() => deleteMember(member.id)}
-                className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-              >
-                Remove Member
-              </button>
-            </div>
+      <h1 className="text-4xl font-semibold mb-6">Task Management</h1>
+      {teamMembers.map((member) => (
+        <div key={member.id} className="mb-8">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl">{member.name}</h2>
+            <button
+              onClick={() => toggleTasksVisibility(member.id)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded"
+            >
+              {selectedMemberId === member.id ? "Hide Tasks" : "Show Tasks"}
+            </button>
+          </div>
 
-            {/* Task List and Add Task Form */}
-            {selectedMemberId === member.id && (
-              <div className="mt-6 bg-white p-4 rounded-lg text-black">
-                <ul className="space-y-4 mb-6">
-                  {member.tasks.map((task) => (
-                    <li
-                      key={task.id}
-                      className="bg-gray-100 p-4 rounded-lg shadow-md flex justify-between"
-                    >
-                      <div>
-                        <h4 className="font-semibold">{task.title}</h4>
-                        <p className="text-sm">{task.description}</p>
-                        <p className="text-xs text-gray-500">{task.status}</p>
-                      </div>
-                      <button
-                        onClick={() => deleteTask(member.id, task.id)}
-                        className="text-red-500 hover:underline"
-                      >
-                        Delete Task
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+          {selectedMemberId === member.id && (
+            <div className="mt-4">
+              <button
+                onClick={() => addTask(member.id)}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Add Task
+              </button>
 
-                {/* Add Task Form */}
+              {/* Task Form */}
+              <div className="mt-4">
                 <input
                   type="text"
-                  placeholder="Task Title"
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  className="border p-3 rounded w-full mb-4"
+                  placeholder="Task Title"
+                  className="border p-3 rounded w-full focus:ring focus:ring-blue-300"
                 />
                 <textarea
-                  placeholder="Task Description"
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  className="border p-3 rounded w-full mb-4"
+                  placeholder="Task Description"
+                  className="border p-3 rounded mt-3 w-full focus:ring focus:ring-blue-300"
                 />
-                <select
-                  value={newTask.status}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, status: e.target.value as Task["status"] })
-                  }
-                  className="border p-3 rounded w-full mb-4"
-                >
-                  <option value="To Do">To Do</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-                <button
-                  onClick={() => addTask(member.id)}
-                  className="bg-indigo-600 text-white px-5 py-3 rounded hover:bg-indigo-700"
-                >
-                  Add Task
-                </button>
+                <div className="mt-3">
+                  <select
+                    value={newTask.status}
+                    onChange={(e) => setNewTask({ ...newTask, status: e.target.value as "To Do" | "In Progress" | "Completed" })}
+                    className="border p-3 rounded w-full focus:ring focus:ring-blue-300"
+                  >
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+
+              {/* Task List */}
+              <div className="mt-6">
+                {member.tasks.map((task) => (
+                  <div key={task.id} className="bg-gray-100 p-4 rounded mb-4">
+                    <h3 className="text-lg font-semibold">{task.title}</h3>
+                    <p>{task.description}</p>
+                    <p>Status: {task.status}</p>
+                    <button
+                      onClick={() => deleteTask(member.id, task.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Remove Task
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </section>
   );
 }
