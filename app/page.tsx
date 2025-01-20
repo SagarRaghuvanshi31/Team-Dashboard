@@ -33,7 +33,7 @@ export default function TeamManagementApp() {
   });
   const [currentTab, setCurrentTab] = useState("Home");
 
-  // State to track which member's tasks are expanded
+  // State to track the expanded member
   const [expandedMember, setExpandedMember] = useState<number | null>(null);
 
   useEffect(() => {
@@ -98,15 +98,14 @@ export default function TeamManagementApp() {
   );
 
   const toggleTaskVisibility = (memberId: number) => {
-    // Toggle visibility of tasks for the clicked member
-    setExpandedMember(expandedMember === memberId ? null : memberId);
+    setExpandedMember((prev) => (prev === memberId ? null : memberId));
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen">
       {/* Sidebar */}
-      <div className="w-1/4 bg-purple-600 text-white p-6">
-        <h1 className="text-2xl font-bold mb-6">Team Manager</h1>
+      <div className="w-full md:w-1/4 bg-purple-600 text-white p-4 md:p-6">
+        <h1 className="text-xl md:text-2xl font-bold mb-6 text-center md:text-left">Team Manager</h1>
         <input
           type="text"
           placeholder="Search by Name or Role"
@@ -114,62 +113,65 @@ export default function TeamManagementApp() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full p-2 rounded mb-4 text-black"
         />
-        <div>
-          <button
-            className={`w-full text-left py-2 px-4 rounded mb-2 ${
-              currentTab === "Home" ? "bg-purple-800" : "hover:bg-purple-700"
-            }`}
-            onClick={() => setCurrentTab("Home")}
-          >
-            Home
-          </button>
-          <button
-            className={`w-full text-left py-2 px-4 rounded mb-2 ${
-              currentTab === "Task Management" ? "bg-purple-800" : "hover:bg-purple-700"
-            }`}
-            onClick={() => setCurrentTab("Task Management")}
-          >
-            Task Management
-          </button>
-        </div>
-      </div>
+        <div className="flex md:flex-col gap-2">
+  <button
+    className={`flex-1 py-2 px-4 rounded ${
+      currentTab === "Home" ? "bg-blue-700" : "bg-blue-600 hover:bg-blue-800"
+    }`}
+    onClick={() => setCurrentTab("Home")}
+  >
+    Home
+  </button>
+  <button
+    className={`flex-1 py-2 px-4 rounded ${
+      currentTab === "Task Management"
+        ? "bg-blue-700"
+        : "bg-blue-600 hover:bg-blue-800"
+    }`}
+    onClick={() => setCurrentTab("Task Management")}
+  >
+    Task Management
+  </button>
+</div>
+</div>
+
 
       {/* Main Content */}
-      <div className="w-3/4 p-6 bg-gray-100">
+      <div className="w-full md:w-3/4 p-4 md:p-6 bg-gray-100">
         {currentTab === "Home" && (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Manage Your Team</h2>
-            <div className="flex gap-4 mb-6">
+            <h2 className="text-xl md:text-2xl font-bold mb-4">Manage Your Team</h2>
+            <div className="flex flex-wrap gap-2 md:gap-4 mb-6">
               <input
                 type="text"
                 placeholder="Name"
                 value={newMember.name}
                 onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="flex-1 p-2 border rounded"
               />
               <input
                 type="text"
                 placeholder="Role"
                 value={newMember.role}
                 onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="flex-1 p-2 border rounded"
               />
               <input
                 type="text"
                 placeholder="Bio"
                 value={newMember.bio}
                 onChange={(e) => setNewMember({ ...newMember, bio: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="flex-1 p-2 border rounded"
               />
               <button
                 onClick={addMember}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
                 Add Member
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredMembers.map((member) => (
                 <div
                   key={member.id}
@@ -192,8 +194,8 @@ export default function TeamManagementApp() {
 
         {currentTab === "Task Management" && (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Task Management</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="text-xl md:text-2xl font-bold mb-4">Task Management</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredMembers.map((member) => (
                 <div
                   key={member.id}
